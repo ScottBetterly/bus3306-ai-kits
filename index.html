@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>AI Project Kits</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Pick your area and track, then download your AI project kit for BUS 3306.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one narrow column, three screens (area → track → kit) with a step tracker in the header */
+  :root{
+    --paper:#F5F2EA; --card:#FFFDF8; --ink:#17201B; --muted:#5E6A62; --line:#DAD4C4;
+    --green:#154734; --accent-text:#154734; --green-soft:#E3ECE6; --gold:#BD8B13; --gold-soft:#F3E7C8;
+    --btn-bg:#17201B; --btn-fg:#FFFFFF; --on-fill:#FFFFFF;
+    --serif:"Newsreader",Georgia,serif; --sans:"Public Sans",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --paper:#131915; --card:#1B231E; --ink:#ECE8DE; --muted:#A2ACA5; --line:#2F3A33;
+    --green:#1F5A42; --accent-text:#8CC4A6; --green-soft:#1E3328; --gold:#C9971F; --gold-soft:#2C2616;
+    --btn-bg:#ECE8DE; --btn-fg:#131915; color-scheme:dark } }
+  :root[data-theme="dark"]{
+    --paper:#131915; --card:#1B231E; --ink:#ECE8DE; --muted:#A2ACA5; --line:#2F3A33;
+    --green:#1F5A42; --accent-text:#8CC4A6; --green-soft:#1E3328; --gold:#C9971F; --gold-soft:#2C2616;
+    --btn-bg:#ECE8DE; --btn-fg:#131915; color-scheme:dark }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 72px}
+  .label{font:500 12px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  button{font:inherit;color:inherit;cursor:pointer}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 0;border-bottom:1px solid var(--line)}
+  .mark{font:600 18px var(--serif);text-decoration:none}
+  .mark span{color:var(--gold)}
+  .steps{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+  .steps li{font:500 12px var(--mono);color:var(--muted);display:flex;align-items:center;gap:6px}
+  .steps li b{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:500}
+  .steps li.now{color:var(--ink)} .steps li.now b{border-color:var(--gold);color:var(--gold)}
+  .steps li.done b{background:var(--green);border-color:var(--green);color:var(--on-fill)}
+  .steps li + li::before{content:"";width:14px;height:1.5px;background:var(--line);margin-right:2px}
+  .steps .txt{display:none}
+  @media (min-width:640px){ .steps .txt{display:inline} }
+
+  .back{display:inline-block;margin:26px 0 0;font-size:15px;color:var(--muted);text-decoration:none}
+  .back:hover{color:var(--ink)}
+
+  .head{padding:40px 0 24px}
+  h1{font:600 clamp(38px,7.5vw,64px)/1.02 var(--serif);letter-spacing:-.01em;margin:10px 0 14px;text-wrap:balance}
+  h1 em{font-style:italic;color:var(--accent-text)}
+  .lede{font-size:clamp(17px,2.2vw,20px);max-width:36ch;margin:0}
+  h2{font:600 24px/1.2 var(--serif);margin:0}
+
+  .group-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+  .group-note{font-size:14px;color:var(--muted)}
+  .rows{border-top:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;border-bottom:1px solid var(--line);padding:15px 4px;font-size:18px;transition:background .15s,padding .15s}
+  .row:hover{background:var(--card);padding-left:12px}
+  .row .go{font-family:var(--mono);font-size:14px;color:var(--muted)}
+  .row.path{font:600 22px/1.25 var(--serif)}
+  .row .blurb{display:block;font:400 15px/1.4 var(--sans);color:var(--muted);margin-top:2px}
+
+  .track{display:block;text-decoration:none;background:var(--card);border:1.5px solid var(--line);border-radius:4px;padding:18px 18px 16px;margin-bottom:12px;transition:border-color .15s}
+  .track:hover{border-color:var(--ink)}
+  .track.match{border-color:var(--gold);box-shadow:inset 6px 0 0 var(--gold)}
+  .t-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+  .track h3{font:600 23px/1.2 var(--serif);margin:0}
+  .proj{font:500 12px var(--mono);color:var(--gold);text-transform:uppercase;letter-spacing:.08em}
+  .track p{margin:6px 0 0}
+  .badge{display:none;font:500 11px var(--mono);background:var(--gold);color:var(--on-fill);padding:3px 8px;border-radius:2px;letter-spacing:.06em;text-transform:uppercase;margin-right:6px}
+  .track.match .badge{display:inline-block}
+
+  .quiz-toggle{background:none;border:0;padding:0;color:var(--accent-text);text-decoration:underline;text-underline-offset:3px;font-size:16px;margin:8px 0 0}
+  .quiz{background:var(--gold-soft);padding:20px 18px;border-radius:4px;margin-top:14px}
+  .qn{font:600 19px var(--serif);margin:0 0 8px}
+  .q{margin-bottom:16px}
+  .opt{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:9px 12px;margin-bottom:6px;font-size:16px}
+  .opt.on{border-color:var(--accent-text);background:var(--green-soft);font-weight:600}
+  .result{font:600 18px var(--serif);margin:4px 0 0}
+
+  .ticket{background:var(--card);border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+  .ticket .main{padding:22px}
+  .ticket p{margin:10px 0 0}
+  .outs{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:13px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;color:var(--muted);background:var(--paper)}
+  .stub{border-top:2px dashed var(--ink);background:var(--green);color:var(--on-fill);padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .stub .file{font:500 15px var(--mono)}
+  .dl{background:var(--gold);color:var(--on-fill);border:0;font-weight:600;padding:12px 20px;border-radius:3px}
+  .dl:hover{filter:brightness(.92)}
+  .dl[disabled]{opacity:.7;cursor:default}
+  .dl-msg{flex-basis:100%;margin:0;font-size:14px}
+
+  .how{margin-top:36px}
+  .how h2{margin-bottom:6px}
+  .how ol{list-style:none;padding:0;margin:0;counter-reset:s}
+  .how li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:12px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start}
+  .how li::before{content:counter(s);font:600 20px var(--serif);width:34px;height:34px;border-radius:50%;background:var(--btn-bg);color:var(--btn-fg);display:grid;place-items:center}
+  .how li > div{min-width:0}
+  .how li b{display:block;font:600 19px/1.3 var(--serif)}
+  .how li span{color:var(--muted);font-size:16px}
+  .copy{display:inline-flex;align-items:center;gap:10px;font:500 16px var(--mono);background:var(--btn-bg);color:var(--btn-fg);border:0;border-radius:3px;padding:7px 14px;margin-top:8px}
+  .copy small{font-family:var(--sans);opacity:.7}
+  .tip{margin-top:20px;font-size:15px;color:var(--muted)}
+  code{font-family:var(--mono);font-size:.88em;background:var(--card);padding:1px 5px;border:1px solid var(--line);border-radius:3px}
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#">BUS 3306 <span>·</span> AI Project Kits</a>
+    <ol class="steps" id="steps"></ol>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>window.KITS = {"concentrations":[{"id":"acc","name":"Accounting","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Catching mistakes and red flags","Helping a person save on taxes"]},{"q":"You're more of a\u2026","a":["Detective","Helper"]},{"q":"Pick a weekend project:","a":["Find the error in a friend's budget","Help a roommate do their taxes"]}],"tracks":["acc-audit","acc-tax"]},{"id":"pkg","name":"Consumer Packaging","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Making packages greener","Making packages stand out on the shelf"]},{"q":"You care most about\u2026","a":["The planet","How things look"]},{"q":"Pick a weekend project:","a":["Sort your recycling the right way","Redesign a cereal box"]}],"tracks":["pkg-sustain","pkg-design"]},{"id":"ent","name":"Entrepreneurship","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Coming up with a new business idea","Talking to people about their problems","Figuring out if an idea makes money"]},{"q":"You're more of a\u2026","a":["Dreamer","Listener","Builder"]},{"q":"Pick a weekend project:","a":["Brainstorm 10 business ideas","Ask 5 friends what bugs them most","Run a bake sale and track the profit"]}],"tracks":["ent-idea","ent-discovery","ent-launch"]},{"id":"fin","name":"Financial Management","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Figuring out what a company is worth","Helping a person reach a money goal","Guessing how a company does next year"]},{"q":"Who would you rather work with?","a":["Company bosses making big deals","One person or family","A team inside one company"]},{"q":"Pick a weekend project:","a":["Compare 5 brands to find the best deal","Make a savings plan for a friend","Plan the budget for a club event"]}],"tracks":["fin-ib","fin-wm","fin-cf"]},{"id":"isa","name":"Information Systems & Analytics","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Finding the story hidden in data","Making boring tasks happen on their own","Designing a better app"]},{"q":"You like\u2026","a":["Charts","Shortcuts","Apps"]},{"q":"Pick a weekend project:","a":["Chart your own Spotify stats","Build a spreadsheet that does your budget for you","Sketch an idea for a new app"]}],"tracks":["isa-analytics","isa-automation","isa-product"]},{"id":"mhr","name":"Management & Human Resources","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Finding and hiring great people","Using data to understand people","Helping new people feel at home"]},{"q":"You're more of a\u2026","a":["Talent spotter","Pattern finder","Welcomer"]},{"q":"Pick a weekend project:","a":["Pick the best team for a group project","Figure out why people quit your club","Plan a welcome event for new members"]}],"tracks":["mhr-recruit","mhr-analytics","mhr-onboard"]},{"id":"mkt","name":"Marketing Management","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Making posts and ads people remember","Finding out what people really think","Testing what gets more clicks and sales"]},{"q":"You're more of a\u2026","a":["Storyteller","Detective","Scientist"]},{"q":"Pick a weekend project:","a":["Design a poster for an event","Run a poll with your friends","Post two versions and see which wins"]}],"tracks":["mkt-brand","mkt-research","mkt-growth"]},{"id":"ref","name":"Real Estate Finance","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Deciding if a building is a good buy","Comparing cities to find the next hot spot"]},{"q":"You like\u2026","a":["Doing the math","Exploring places"]},{"q":"Pick a weekend project:","a":["Scroll Zillow hunting for deals","Pick the best city to move to after college"]}],"tracks":["re-underwrite","re-market"]},{"id":"scm","name":"Supply Chain Management","type":"concentration","live":true,"quiz":[{"q":"Which sounds most fun?","a":["Making sure the shelf is never empty","Spotting trouble before it hits","Finding the best way to move stuff"]},{"q":"What bugs you most?","a":["When a store runs out of what you want","Surprises nobody saw coming","Waiting forever for a package"]},{"q":"Pick a weekend project:","a":["Plan snacks so a road trip never runs out","Figure out which friend is the most reliable driver","Plan the fastest route for the trip"]}],"tracks":["scm-inventory","scm-supplier","scm-logistics"]},{"id":"con","name":"Consulting","type":"path","live":true,"blurb":"Solve business problems for other companies.","quiz":[{"q":"Which sounds most fun?","a":["Helping a company decide its next big move","Making a business run smoother","Finding ways AI can help a company"]},{"q":"You're more of a\u2026","a":["Big-picture thinker","Fixer","Tech fan"]},{"q":"Pick a weekend project:","a":["Plan how your club can double in size","Fix the slow line at a campus event","Set up AI tools for a friend's business"]}],"tracks":["con-strategy","con-ops","con-tech"]},{"id":"sales","name":"Sales","type":"path","live":true,"blurb":"Find customers, earn their trust, and close deals.","quiz":[{"q":"Which sounds most fun?","a":["Selling software that solves big problems","Finding and reaching out to new customers","Getting a product onto store shelves"]},{"q":"You like\u2026","a":["Tech and numbers","Meeting new people","Brands and products"]},{"q":"Pick a weekend project:","a":["Show a friend why an app is worth paying for","Get 10 local businesses to sponsor your club","Convince the campus store to carry a snack"]}],"tracks":["sales-tech","sales-sdr","sales-cpg"]}],"tracks":{"acc-audit":{"name":"Audit","project":"Red Flag Review","pickIf":"You like spotting what doesn't add up.","make":"You'll act like an auditor. You'll scan a real company's numbers for strange changes, then test a set of sample transactions to catch errors and red flags.","outputs":["Red-flag analysis spreadsheet","Findings memo","Web one-pager","6-slide deck"]},"acc-tax":{"name":"Tax","project":"Tax Planner","pickIf":"You like helping people keep more of their money.","make":"You'll make up a person with a job and a side hustle and estimate their taxes. Then you'll test 3 smart moves to see which saves the most, like a tax advisor.","outputs":["Tax estimate spreadsheet","Letter to the client","Web one-pager","6-slide deck"]},"pkg-sustain":{"name":"Sustainable Packaging","project":"Greener Package","pickIf":"You want less trash and smarter materials.","make":"You'll pick a product and compare its package to 2 greener options. You'll score them on recycling, weight, cost, and pollution, and recommend a switch.","outputs":["Package comparison spreadsheet","Recommendation memo","Web one-pager","6-slide deck"]},"pkg-design":{"name":"Package Design","project":"Shelf Standout","pickIf":"You notice packaging and know what grabs your eye.","make":"You'll pick a product and the store aisle it sits in, study the competition on the shelf, and design a new package front that stands out. You'll explain every design choice.","outputs":["Shelf audit spreadsheet","Design brief","2 package concepts","6-slide deck"]},"ent-idea":{"name":"Startup Idea","project":"Venture One-Pager","pickIf":"You have ideas and want to know if they're big enough.","make":"You'll turn a problem from your own life into a startup idea. You'll size the market, look at competitors, and make a one-page pitch investors could read in a minute.","outputs":["Market and competitor model","Investor one-pager","6-slide deck"]},"ent-discovery":{"name":"Customer Discovery","project":"Talk to Customers","pickIf":"You'd rather ask people than guess.","make":"You'll test whether a startup idea is real by talking to people. You'll write an interview guide, talk to 5 people (or use sample interviews), and decide whether to keep going, change, or stop.","outputs":["Interview guide","Evidence tracker","Go / change / stop memo","Web one-pager","6-slide deck"]},"ent-launch":{"name":"Launch & Money","project":"Will It Make Money?","pickIf":"You want to know if an idea actually pays.","make":"You'll take a business idea and do the math: price, costs, how much it costs to get a customer, and when you break even. Then you'll build a real landing page for it.","outputs":["Money model spreadsheet","Landing page","6-slide deck"]},"fin-ib":{"name":"Investment Banking","project":"Company Pitch","pickIf":"You want to know what makes a company a good buy.","make":"You'll pick a real company and size it up next to its competitors to decide whether it looks like a good deal. Then you'll write the kind of one-page company pitch bankers send to buyers.","outputs":["Comparison spreadsheet","One-page company pitch","Web one-pager","6-slide deck"]},"fin-wm":{"name":"Wealth Management","project":"Client Plan","pickIf":"You like helping people plan for big life goals.","make":"You'll invent a client, figure out their money goal, and build a plan showing how to invest to reach it. You'll show what happens in good, normal, and bad years, just like a real advisor's client review.","outputs":["Investment plan spreadsheet","Client rules memo (IPS)","Web one-pager","6-slide deck"]},"fin-cf":{"name":"Corporate Finance","project":"Company Forecast","pickIf":"You want to help a company plan its money.","make":"You'll take a real company's last 3 years of numbers and predict the next 3 years. You'll test a 'what if' (like a recession or a price increase) and write a short memo to the company's CFO saying what to do.","outputs":["3-scenario forecast","Memo to the CFO","Web one-pager","6-slide deck"]},"isa-analytics":{"name":"Data Analytics","project":"Data Story Dashboard","pickIf":"You like finding answers hidden in numbers.","make":"You'll take a real or sample data set, clean it up, and find the story inside it. Then you'll build a dashboard that answers one clear business question.","outputs":["Cleaned data and analysis","Findings memo","Interactive dashboard","6-slide deck"]},"isa-automation":{"name":"Automation","project":"Automate a Task","pickIf":"You hate doing the same boring task twice.","make":"You'll pick a boring task that people do by hand over and over, and build a small tool that does it for them. You'll measure how much time it saves.","outputs":["A working tool","Time-saved math","How-to guide","Web one-pager","6-slide deck"]},"isa-product":{"name":"Product Management","project":"Feature Spec","pickIf":"You always have ideas to make apps better.","make":"You'll pick an app you use, find something that annoys people, and design a new feature to fix it. You'll write the plan a product manager would hand to engineers, plus a clickable mock-up.","outputs":["Feature plan (PRD)","Review evidence sheet","Clickable mock-up","6-slide deck"]},"mhr-recruit":{"name":"Recruiting","project":"Hire the Right Person","pickIf":"You're good at reading people and picking teams.","make":"You'll pick a company and a job, then build a fair hiring kit: a job post, interview questions, and a scorecard. You'll check it for bias so every candidate gets a fair shot.","outputs":["Interview scorecard","Job post","Bias check","Web one-pager","6-slide deck"]},"mhr-analytics":{"name":"People Analytics","project":"Why People Leave","pickIf":"You want to use data to make work better.","make":"You'll study a set of made-up employee data to find out why people quit. Then you'll give a company a plan to keep its best people.","outputs":["Turnover analysis","Plan to keep people","Web one-pager","6-slide deck"]},"mhr-onboard":{"name":"Onboarding & Culture","project":"First 90 Days","pickIf":"You remember how it feels to be the new person.","make":"You'll pick a company and a job, then design the first 90 days for a new hire: what they learn, who they meet, and how you'll know it's working.","outputs":["90-day plan spreadsheet","Check-in survey","Journey one-pager","6-slide deck"]},"mkt-brand":{"name":"Brand Campaign","project":"Campaign Plan","pickIf":"You love great ads, posts, and big creative ideas.","make":"You'll pick a brand you like and plan a campaign to reach people it's missing. You'll get a customer profile, a big idea, real posts and emails, a budget, and a landing page.","outputs":["Campaign plan + 3 real posts","Budget and goals sheet","Landing-page one-pager","6-slide deck"]},"mkt-research":{"name":"Market Research","project":"Customer Insights","pickIf":"You're curious why people buy what they buy.","make":"You'll pick a brand and a puzzle it faces, then find out what real people think. You'll sort what they say into clear themes and turn it into 3 recommendations, the way a research team would.","outputs":["Survey or review analysis","One-page insight brief","Web one-pager","6-slide deck"]},"mkt-growth":{"name":"Growth & Digital","project":"Growth Plan","pickIf":"You like testing ideas and watching the numbers move.","make":"You'll pick a brand, find where it's losing customers, and plan how to fix it. You'll get a step-by-step customer map, a 30-day content calendar, and a test that compares two versions to see which works better.","outputs":["Customer funnel model","30-day content calendar","A/B test plan","Web one-pager","6-slide deck"]},"re-underwrite":{"name":"Acquisitions","project":"Should We Buy It?","pickIf":"You like crunching the numbers on a big purchase.","make":"You'll pick a real rental property listed for sale and decide whether it's a good investment. You'll build the numbers investors use: rent, costs, mortgage, and return.","outputs":["Deal model spreadsheet","Buy-or-pass memo","Web one-pager","6-slide deck"]},"re-market":{"name":"Market Analysis","project":"Where to Invest Next","pickIf":"You like comparing places and spotting trends.","make":"You'll compare 3 cities or neighborhoods to decide where a real estate investor should buy next. You'll use public data on rent, prices, jobs, and population.","outputs":["Market scorecard","Recommendation memo","Web one-pager","6-slide deck"]},"scm-inventory":{"name":"Inventory Planning","project":"Never Run Out","pickIf":"You like making sure things are where they need to be.","make":"You'll pick a company and one product, then build a model that says when to reorder and how much to order. You'll stress-test it against a real-world 'uh-oh' and show it on a live dashboard.","outputs":["Reorder model spreadsheet","Stress test","Dashboard one-pager","6-slide deck"]},"scm-supplier":{"name":"Supplier Risk","project":"Risk Scorecard","pickIf":"You like spotting problems before they happen.","make":"You'll pick a company and one important part of its product, then find out where that part comes from and what could go wrong. You'll score each risk and give the company a plan.","outputs":["Risk scorecard spreadsheet","Action memo","Heatmap one-pager","6-slide deck"]},"scm-logistics":{"name":"Logistics","project":"Best Way to Ship","pickIf":"You like finding the fastest, cheapest, cleanest way.","make":"You'll pick a company and one trip its products take, like from a factory to a store. You'll compare ways to ship it on cost, speed, and pollution, then recommend the best option.","outputs":["Shipping comparison spreadsheet","Recommendation memo","Web one-pager","6-slide deck"]},"con-strategy":{"name":"Strategy Consulting","project":"Growth Strategy","pickIf":"You like big questions like 'Where should we grow next?'","make":"You'll pick a company and a big question it faces, like 'Should we sell in a new country?' You'll size the opportunity, compare options, and give a clear recommendation the way a consultant would.","outputs":["Market sizing and options model","Recommendation memo","Web one-pager","6-slide deck"]},"con-ops":{"name":"Operations Consulting","project":"Fix the Process","pickIf":"Slow lines and wasted steps drive you crazy.","make":"You'll pick a business and one slow or annoying process, like a long checkout line. You'll map every step, find the waste, and redesign it to save time and money.","outputs":["Process map and savings model","Fix-it memo","Before/after one-pager","6-slide deck"]},"con-tech":{"name":"Tech & AI Consulting","project":"AI Opportunity Plan","pickIf":"You want to help companies use AI the right way.","make":"You'll pick a company or industry and find the tasks where AI could save the most time. You'll score each idea on value and effort and build a step-by-step plan, the way technology consultants do.","outputs":["AI opportunity scorecard","ROI math","90-day roadmap","Web one-pager","6-slide deck"]},"sales-tech":{"name":"Tech Sales","project":"Account Plan","pickIf":"More technical. You like tech and can explain why it's worth the money.","make":"You'll pick a software product and a real company that should buy it. You'll research the customer's problems, build a calculator showing what they'd save, and write the first email and call plan, just like a tech sales rep.","outputs":["Account plan","ROI calculator","Email and call plan","Web one-pager","6-slide deck"]},"sales-sdr":{"name":"Sales Development","project":"Outreach Plan","pickIf":"Less technical. You like meeting people and starting conversations.","make":"You'll pick something to sell and figure out who the best customers are. You'll rank a list of companies to reach out to and write a friendly 3-message outreach plan, the way new sales hires start.","outputs":["Ranked prospect list","3-message outreach plan","Web one-pager","6-slide deck"]},"sales-cpg":{"name":"Consumer Goods Sales","project":"Retail Pitch","pickIf":"You love brands and want to get products into stores.","make":"You'll pick a product you love and pitch a store to carry it. You'll show the store why it will sell, how much money the store makes on it, and a plan to get it moving off the shelf.","outputs":["Store money math","Sell sheet","Web one-pager","6-slide deck"]}}};</script>
+<script>
+const K = window.KITS;
+const app = document.getElementById('app');
+const quiz = {};   // area id -> {question index: answer index}
+const area = id => K.concentrations.find(c => c.id === id && c.live);
+const areaOfTrack = tid => K.concentrations.find(c => c.live && c.tracks.includes(tid));
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+// Inside a Claude artifact, files are saved through the viewer's download prompt; elsewhere a normal link works.
+const dlCap = (window.claude && window.claude.use) ? window.claude.use("downloads").catch(() => null) : Promise.resolve(null);
+
+function stepBar(n){
+  const names = ["Pick your area", "Pick a track", "Get your kit"];
+  document.getElementById('steps').innerHTML = names.map((t,i) =>
+    `<li class="${i+1<n?'done':i+1===n?'now':''}"><b>${i+1<n?'✓':i+1}</b><span class="txt">${t}</span></li>`).join("");
+}
+
+function homePage(){
+  stepBar(1);
+  const row = c => `<a class="row ${c.type==='path'?'path':''}" href="#${c.id}"><span>${esc(c.name)}${c.blurb?`<span class="blurb">${esc(c.blurb)}</span>`:''}</span><span class="go">→</span></a>`;
+  app.innerHTML = `
+    <section class="head">
+      <div class="label">Step 1 of 3</div>
+      <h1>Build something <em>real</em> with AI.</h1>
+      <p class="lede">Pick the area you're interested in. You'll get a kit that walks you through a project you can show an employer.</p>
+    </section>
+    <div>
+      <div class="group-label"><span class="label">By concentration</span></div>
+      <div class="rows">${K.concentrations.filter(c => c.type !== 'path' && c.live).map(row).join("")}</div>
+    </div>
+    <div style="margin-top:36px">
+      <div class="group-label"><span class="label">Or by career path</span><span class="group-note">Works with any concentration</span></div>
+      <div class="rows">${K.concentrations.filter(c => c.type === 'path' && c.live).map(row).join("")}</div>
+    </div>`;
+}
+
+function matchOf(c){
+  const a = quiz[c.id] || {};
+  if (Object.keys(a).length < c.quiz.length) return null;
+  const v = c.tracks.map(() => 0); Object.values(a).forEach(x => v[x]++);
+  const max = Math.max(...v);
+  return v.filter(x => x === max).length > 1 ? -1 : v.indexOf(max);
+}
+
+function areaPage(c){
+  stepBar(2);
+  const m = matchOf(c);
+  const open = !!quiz[c.id];
+  app.innerHTML = `
+    <a class="back" href="#">← All areas</a>
+    <section class="head">
+      <div class="label">Step 2 of 3 · ${c.type==='path'?'Career path':'Concentration'}</div>
+      <h1>${esc(c.name)}</h1>
+      <p class="lede">Pick the one that sounds most interesting to you.</p>
+    </section>
+    <div>${c.tracks.map((tid,i) => { const t = K.tracks[tid]; return `
+      <a class="track ${m===i?'match':''}" href="#${tid}">
+        <div class="t-top"><h3>${esc(t.name)}</h3><span><span class="badge">Your match</span><span class="proj">${esc(t.project)}</span></span></div>
+        <p>${esc(t.pickIf)}</p>
+      </a>`; }).join("")}</div>
+    <button class="quiz-toggle" id="qt">Not sure? Answer 3 quick questions.</button>
+    <div class="quiz" id="quiz" ${open?'':'hidden'}>
+      ${c.quiz.map((q,qi) => `<div class="q"><p class="qn">${qi+1}. ${esc(q.q)}</p>${q.a.map((a,ai) =>
+        `<button class="opt ${(quiz[c.id]||{})[qi]===ai?'on':''}" data-q="${qi}" data-a="${ai}">${esc(a)}</button>`).join("")}</div>`).join("")}
+      ${m===-1 ? `<p class="result">It's a tie. Read the options above and go with your gut.</p>`
+        : m!==null ? `<p class="result">Your match: ${esc(K.tracks[c.tracks[m]].name)}. It's marked above.</p>` : ""}
+    </div>`;
+  document.getElementById('qt').onclick = () => { const q = document.getElementById('quiz'); q.hidden = !q.hidden; };
+  app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    quiz[c.id] = quiz[c.id] || {}; quiz[c.id][b.dataset.q] = +b.dataset.a;
+    const y = scrollY; areaPage(c); scrollTo(0, y);
+  });
+}
+
+async function downloadKit(tid, btn, msg){
+  const file = `${tid}.zip`;
+  btn.disabled = true; msg.textContent = "";
+  try {
+    const dl = await dlCap;
+    if (dl) {
+      // The artifact host can't serve .zip files, so each kit is published as base64 text and rebuilt here.
+      const res = await fetch(`kits/${tid}.txt`);
+      if (!res.ok) throw {code: "missing"};
+      const bin = atob((await res.text()).trim());
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      await dl.save({filename: file, data: new Blob([bytes])});
+      msg.textContent = "Saved. Check your Downloads folder.";
+    } else if (window.claude) {
+      msg.textContent = "Downloads aren't available in this view. Open this page on claude.ai to download.";
+    } else {
+      const a = document.createElement('a'); a.href = `kits/${file}`; a.download = file; document.body.appendChild(a); a.click(); a.remove();
+    }
+  } catch (e) {
+    const code = e && e.code;
+    msg.textContent = code === "declined" ? "Download canceled. Click the button to try again."
+      : code === "rate_limited" ? "A save prompt is already open. Finish that one first."
+      : "The download didn't work. Refresh the page and try again.";
+  } finally { btn.disabled = false; }
+}
+
+function kitPage(c, tid){
+  stepBar(3);
+  const t = K.tracks[tid];
+  app.innerHTML = `
+    <a class="back" href="#${c.id}">← Back to ${esc(c.name)}</a>
+    <section class="head">
+      <div class="label">Step 3 of 3 · Your kit</div>
+      <h1>${esc(t.project)}</h1>
+    </section>
+    <div class="ticket">
+      <div class="main">
+        <div class="label">${esc(c.name)} · ${esc(t.name)}</div>
+        <p>${esc(t.make)}</p>
+        <div class="outs">${t.outputs.map(o => `<span class="chip">${esc(o)}</span>`).join("")}</div>
+      </div>
+      <div class="stub"><span class="file">${tid}.zip</span><button class="dl" id="dlBtn">Download kit</button><p class="dl-msg" id="dlMsg" aria-live="polite"></p></div>
+    </div>
+    <section class="how">
+      <h2>How to start</h2>
+      <ol>
+        <li><div><b>Download the kit</b><span>Click the gold button above.</span></div></li>
+        <li><div><b>Unzip it</b><span>Mac: double-click the file. Windows: right-click it, then choose Extract All.</span></div></li>
+        <li><div><b>Open the folder in Codex</b><span>Open the whole folder, not just one file.</span></div></li>
+        <li><div><b>Type this and press Enter</b><button class="copy" id="copyBtn">Let's start. <small>copy</small></button>
+          <span style="display:block;margin-top:8px">Then just answer the questions. Stuck on one? Type <b style="display:inline;font:inherit;font-weight:600">Help me pick.</b></span></div></li>
+      </ol>
+      <p class="tip">Codex not working? Open <code>PROMPT.md</code> in the folder to use ChatGPT instead.</p>
+    </section>`;
+  document.getElementById('dlBtn').onclick = () => downloadKit(tid, document.getElementById('dlBtn'), document.getElementById('dlMsg'));
+  document.getElementById('copyBtn').onclick = async () => {
+    const b = document.getElementById('copyBtn');
+    try { await navigator.clipboard.writeText("Let's start."); b.innerHTML = "Let's start. <small>copied</small>"; }
+    catch(e){ b.innerHTML = "Let's start. <small>type it in</small>"; }
+  };
+}
+
+function route(){
+  const h = location.hash.replace(/^#\/?/, "").split("/").pop();   // also accepts older #/fin/fin-ib links
+  const c = area(h), tc = areaOfTrack(h);
+  if (tc) kitPage(tc, h);
+  else if (c) areaPage(c);
+  else homePage();
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', route);
+route();
+</script>
+</html>
